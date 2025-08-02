@@ -119,7 +119,7 @@ lvgl:
               widgets:
               - button: !include {
                  file: modules/lvgl/buttons/basic_light_button.yaml,
-                 vars: { id: 4, width: "100%", name: "Rangehood", icon: $light_recessed, entity: switch.rangehood_power }
+                 vars: { id: 4, width: "100%", name: "Rangehood", image: rangehood_30px, entity: switch.rangehood_power }
                }
               - button: !include {
                  file: modules/lvgl/buttons/basic_light_button.yaml,

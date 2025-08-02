@@ -15,11 +15,3 @@ esphome:
   
 # Application config
 <<: !include cooker-base.yaml
-display:
-  rotation: 270
-
-touchscreen:
-  transform:
-    swap_xy: false
-    mirror_y: false
-
