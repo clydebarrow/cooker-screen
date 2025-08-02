@@ -1,0 +1,33 @@
+script:
+  - id: light_on
+    mode: restart
+    then:
+      - homeassistant.service:
+          service: switch.turn_on
+          data:
+            entity_id: switch.stovetop_lights
+      - delay: 10min
+      - homeassistant.service:
+          service: switch.turn_off
+          data:
+            entity_id: switch.stovetop_lights
+
+  - id: beep
+    mode: restart
+    then:
+      - switch.turn_on: buzzer
+      - delay: 0.5s
+      - switch.turn_off: buzzer
+      - if:
+          condition:
+            lambda: return id(cooker_current).state > 35;
+          then:
+            delay: 0.5s
+          else:
+            delay: 15s
+      - if:
+          condition:
+            lambda: return id(cooker_current).state > 30;
+          then:
+            script.execute: beep
+

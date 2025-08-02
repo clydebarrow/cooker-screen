@@ -1,0 +1,30 @@
+---
+# Graphic assets
+image:
+  rgb565:
+    alpha_channel:
+      - file: https://esphome.io/_static/logo-text-on-light.svg
+        id: boot_logo_90px
+        resize: 450x90 # aspect ratio 5
+        
+      - file: https://esphome.io/_static/logo-text-on-light.svg
+        id: boot_logo_20px
+        resize: 100x20  # aspect ratio 5
+        
+      - file: assets/produced_icon.svg
+        id: produced_icon_80px
+        resize: 80x80
+
+      - file: assets/grid_ok.svg
+        id: grid_ok_30px
+        resize: 30x30
+
+  grayscale:
+    alpha_channel:
+      - file: assets/rangehood.svg
+        id: rangehood_30px
+        resize: 30x30
+
+  binary:
+    - file: assets/1x1.png
+      id: empty_image

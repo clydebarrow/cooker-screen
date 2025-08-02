@@ -1,0 +1,16 @@
+---
+# Local relay as light or switch - Define its settings in substitutions
+light:
+  - platform: binary
+    output: $button_${id}_device
+    name: $button_${id}_name
+    id: local_light_${id}
+    on_state:
+      then:
+        - lvgl.widget.update:
+            id:
+              - lv_button_${id}
+              - lv_button_${id}_label
+              - lv_button_${id}_icon
+            state:
+              checked: !lambda return id(local_light_${id}).current_values.is_on();

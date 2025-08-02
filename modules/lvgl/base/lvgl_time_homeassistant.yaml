@@ -1,0 +1,27 @@
+---
+time:
+  - platform: homeassistant
+    id: system_time
+    on_time_sync:
+      - script.execute: time_update
+    on_time:
+      - seconds: 0
+        minutes: $screen_sleep_minute
+        hours: $screen_sleep_hour
+        then:
+          - light.turn_off:
+              id: display_backlight
+          - lvgl.pause:
+              show_snow: true
+
+      - seconds: 0
+        minutes: $screen_wake_minute
+        hours: $screen_wake_hour
+        then:
+          - lvgl.resume:
+          - light.turn_on:
+              id: display_backlight
+      - minutes: '*'
+        seconds: 0
+        then:
+          - script.execute: time_update

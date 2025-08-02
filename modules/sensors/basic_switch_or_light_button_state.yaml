@@ -1,0 +1,19 @@
+---
+# Basic switch or light state - Define its settings in substitutions
+text_sensor:
+  - platform: homeassistant
+    id: button_${id}_sensor_id
+    entity_id: ${entity}
+    on_value:
+      then:
+        - logger.log:
+            format: "New state is %s"
+            args: [x.c_str()]
+        - lvgl.widget.update:
+            id:
+              - lv_button_${id}
+              - lv_button_${id}_label
+              - lv_button_${id}_icon
+            state:
+              checked: !lambda return x == "on";
+              disabled: !lambda return x == "unknown" || x == "unavailable";

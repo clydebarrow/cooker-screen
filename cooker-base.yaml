@@ -1,0 +1,148 @@
+# Substitution variables used through the codebase
+substitutions:
+  wall_sconce_round: "\U000F0748"
+  lightbulb:         "\U000F0335"
+  ceiling_light:     "\U000F0769"
+  lamp:              "\U000F06B5"
+  floor_lamp:        "\U000F08DD"
+  string_lights:     "\U000F12BA"
+  track_light:       "\U000F0914"
+  bulkhead_light:    "\U000F1A2F"
+  led_strip:         "\U000F07D6"
+  coach_lamp:        "\U000F1020"
+  ceiling_fan_light: "\U000F1798"
+  light_recessed:    "\U000F179B"
+
+  icon_font: light40
+  time_font: dseg_60
+  date_font: roboto48
+  text_font: roboto24
+  number_font: numbers64
+  screen_height: '480'
+  screen_width: '480'
+  button_on_color: "burnt_sienna"
+  button_off_color: "very_dark_gray"
+  icon_on_color: "yellow"
+  icon_off_color: "gray"
+  label_on_color: "white"
+  label_off_color: "gray"
+  button_text_color: "white"
+  time_color: "powderblue"
+  button_height_single: '109px'
+  button_height_double: '228px'
+  button_width: '150px'
+  touchscreen_idle_timeout: "120s"
+  # Boot screen configuration
+  boot_screen_delay: 4s
+
+  # Screen goes to sleep
+  screen_sleep_hour: '3'
+  screen_sleep_minute: '0'
+
+  # Screen wakes up at 5:30am
+  screen_wake_hour: '4'
+  screen_wake_minute: '0'
+
+api:
+  encryption:
+    key: !secret encryption_key
+
+logger:
+  level: debug
+
+packages:
+  # Update button and relay state from Home Assistant
+  - !include { file: modules/sensors/basic_switch_or_light_button_state.yaml, vars: { id: 1, entity: "switch.stovetop_lights" } }
+  - !include { file: modules/sensors/basic_switch_or_light_button_state.yaml, vars: { id: 2, entity: "switch.kitchen_lights_1" } }
+  - !include { file: modules/sensors/basic_switch_or_light_button_state.yaml, vars: { id: 3, entity: "switch.kitchen_lights_2" } }
+  - !include { file: modules/sensors/basic_switch_or_light_button_state.yaml, vars: { id: 4, entity: "switch.rangehood_power" } }
+  - !include modules/common/color.yaml
+  - !include modules/common/fonts.yaml
+  - !include modules/common/images.yaml
+  - !include modules/common/globals.yaml
+  - !include modules/lvgl/base/lvgl_time2_update.yaml
+  - !include modules/lvgl/base/lvgl_time_homeassistant.yaml
+  - !include scripts/common.yaml
+  - !include sensors/common.yaml
+
+
+.vc: &vcontainer
+  styles: container
+  flex_grow: 1
+  layout:
+    type: flex
+    flex_flow: column
+    flex_align_main: space_between
+  height: "100%"
+
+.hc: &hcontainer
+  styles: container
+  pad_all: 5px
+  layout:
+    type: flex
+    flex_flow: row
+    flex_align_main: space_between
+    flex_align_cross: center
+  width: 100%
+  
+# -------------------------------------------------------------------------
+# LVGL pages and buttons
+# -------------------------------------------------------------------------
+lvgl:
+  theme: !include { file: modules/lvgl/base/lvgl_theme.yaml }
+  page_wrap: true
+  style_definitions:
+    - id: container
+      border_width: 0
+      outline_width: 0
+      bg_opa: transp
+      radius: 0
+      
+
+# Boot screen
+  top_layer: !include { file: modules/lvgl/screens/boot_screen.yaml }
+
+# Main Page
+  pages:
+  - id: main_page
+    bg_color: black
+    bg_opa: cover
+    pad_all: 0
+    widgets:
+    - obj:
+        <<: *hcontainer
+        height: 50%
+        align: top_mid
+        widgets: # Include all the buttons
+          - obj:
+              <<: *vcontainer
+              widgets:
+              - button: !include {
+                 file: modules/lvgl/buttons/basic_light_button.yaml,
+                 vars: { id: 4, width: "100%", name: "Rangehood", icon: $light_recessed, entity: switch.rangehood_power }
+               }
+              - button: !include {
+                 file: modules/lvgl/buttons/basic_light_button.yaml,
+                 vars: { id: 1, width: "100%", name: "Cooker", icon: $light_recessed, entity: switch.stovetop_lights }
+               }
+          - button: !include {
+             file: modules/lvgl/buttons/basic_light_button.yaml,
+             vars: { id: 2, height: "100%", name: "Kitchen 1", icon: $wall_sconce_round, entity: switch.kitchen_lights_1 }
+           }
+          - button: !include {
+             file: modules/lvgl/buttons/basic_light_button.yaml,
+             vars: { id: 3, height: "100%", name: "Kitchen 2", icon: $wall_sconce_round, entity: switch.kitchen_lights_2 }
+           }
+    - obj:
+        <<: *hcontainer
+        align: bottom_mid
+        height: 50%
+        widgets:
+          - obj: !include { file: modules/lvgl/power/current.yaml, vars: { id: 1, height: "100%", name: "Cooker\nCurrent" } }
+          - obj: !include { file: modules/lvgl/datetime/time.yaml, vars: { id: 1, height: "100%" } }
+          - obj:
+              <<: *vcontainer
+              widgets:
+                - obj: !include { file: modules/lvgl/weather/weather.yaml, vars: { id: 1, width: "100%" } }
+                - obj: !include { file: modules/lvgl/weather/humidity.yaml, vars: { id: 1, width: "100%" } }
+

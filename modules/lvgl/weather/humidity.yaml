@@ -1,0 +1,23 @@
+            height: ${ height | d("size_content") }
+            width: ${ width | d("size_content") }
+            flex_grow: 1
+            text_color: $button_text_color
+            text_align: center
+            bg_opa: transp
+            layout:
+              type: flex
+              flex_flow: row
+              flex_align_main: center
+              flex_align_track: center
+              flex_align_cross: start
+              pad_column: 2
+            widgets:
+              - label:
+                  id: humidity_value
+                  text_font: roboto48
+                  text: "--"
+              - label:
+                  align: top_mid
+                  text_font: roboto22
+                  pad_top: 4
+                  text: "%"

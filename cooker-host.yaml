@@ -1,0 +1,22 @@
+esphome:
+  name: host-lvgl
+  friendly_name: Cooker Screen
+    
+sensor:
+  - platform: homeassistant
+    id: humidity_id
+    entity_id: sensor.cooker_screen_humidity
+    on_value:
+      - lvgl.label.update:
+          id: humidity_value
+          text:
+            format: "%.0f"
+            args: [x]
+
+<<: !include modules/hardware/SDL-lvgl.yaml
+<<: !include cooker-base.yaml
+  
+  # Generic configuration for ESP32 screens
+# SDL has no Wi-Fi
+# wifi: !include modules/common/wifi.yaml
+  
