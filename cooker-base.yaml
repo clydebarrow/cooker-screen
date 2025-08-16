@@ -62,6 +62,7 @@ packages:
   - !include modules/common/globals.yaml
   - !include modules/lvgl/base/lvgl_time2_update.yaml
   - !include modules/lvgl/base/lvgl_time_homeassistant.yaml
+  - !include modules/lvgl/base/lvgl_theme.yaml
   - !include scripts/common.yaml
   - !include sensors/common.yaml
 
@@ -89,15 +90,7 @@ packages:
 # LVGL pages and buttons
 # -------------------------------------------------------------------------
 lvgl:
-  theme: !include { file: modules/lvgl/base/lvgl_theme.yaml }
   page_wrap: true
-  style_definitions:
-    - id: container
-      border_width: 0
-      outline_width: 0
-      bg_opa: transp
-      radius: 0
-      
 
 # Boot screen
   top_layer: !include { file: modules/lvgl/screens/boot_screen.yaml }
@@ -109,13 +102,13 @@ lvgl:
     bg_opa: cover
     pad_all: 0
     widgets:
-    - obj:
-        <<: *hcontainer
+    - container:
+        direction: horizontal
         height: 50%
         align: top_mid
         widgets: # Include all the buttons
-          - obj:
-              <<: *vcontainer
+          - container:
+              direction: vertical
               widgets:
               - button: !include {
                  file: modules/lvgl/buttons/basic_light_button.yaml,
@@ -133,16 +126,15 @@ lvgl:
              file: modules/lvgl/buttons/basic_light_button.yaml,
              vars: { id: 3, height: "100%", name: "Kitchen 2", icon: $wall_sconce_round, entity: switch.kitchen_lights_2 }
            }
-    - obj:
-        <<: *hcontainer
+    - container:
+        direction: horizontal
         align: bottom_mid
         height: 50%
         widgets:
           - obj: !include { file: modules/lvgl/power/current.yaml, vars: { id: 1, height: "100%", name: "Cooker\nCurrent" } }
           - obj: !include { file: modules/lvgl/datetime/time.yaml, vars: { id: 1, height: "100%" } }
-          - obj:
-              <<: *vcontainer
+          - container:
+              direction: vertical
               widgets:
                 - obj: !include { file: modules/lvgl/weather/weather.yaml, vars: { id: 1, width: "100%" } }
                 - obj: !include { file: modules/lvgl/weather/humidity.yaml, vars: { id: 1, width: "100%" } }
-

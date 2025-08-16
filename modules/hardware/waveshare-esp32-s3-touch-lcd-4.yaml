@@ -123,54 +123,12 @@ spi:
     clk_pin: GPIO2
     mosi_pin: GPIO1
     
-#external_components:
-  #- source: github://pr#9892
-    #components: [mipi, mipi_rgb]
-    #refresh: 1h
+external_components:
+  - source: github://pr#9892
+    components: [mipi, mipi_rgb]
+    refresh: 1h
 
 display:
-  platform: st7701s
-  id: st7701s_disp
-  update_interval: never
-  auto_clear_enabled: false
-  data_rate: 2MHz
-  spi_mode: MODE3
-  color_order: BGR
-  invert_colors: true
-  dimensions:
-    width: 480
-    height: 480
-  transform:
-    mirror_x: false
-    mirror_y: false
-  cs_pin: GPIO42
-  de_pin: GPIO40
-  hsync_pin: GPIO38
-  vsync_pin: GPIO39
-  pclk_pin: GPIO41
-  pclk_frequency: 12MHz
-  pclk_inverted: false
-  data_pins:
-    red:
-      - GPIO46       #r1
-      - GPIO3        #r2
-      - GPIO8      #r3
-      - GPIO18       #r4
-      - GPIO17       #r5
-    green:
-      - GPIO14       #g0
-      - GPIO13       #g1
-      - GPIO12       #g2
-      - GPIO11       #g3
-      - GPIO10       #g4
-      - GPIO9     #g5
-    blue:
-      - GPIO5        #b1
-      - GPIO45       #b2
-      - GPIO48       #b3
-      - GPIO47       #b4
-      - GPIO21       #b5`
-#display:
-#  platform: mipi_rgb
-#  model: "WAVESHARE-4-480x480"
+  platform: mipi_rgb
+  model: "WAVESHARE-4-480x480"
   rotation: 270

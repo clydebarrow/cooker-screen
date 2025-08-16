@@ -24,6 +24,12 @@ image:
       - file: assets/rangehood.svg
         id: rangehood_30px
         resize: 30x30
+      - file: mdi:tree-outline
+        id: tree_outline_50px
+        resize: 50x50
+      - file: mdi:water-percent
+        id: humidity_50px
+        resize: 50x50
 
   binary:
     - file: assets/1x1.png
