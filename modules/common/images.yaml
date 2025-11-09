@@ -3,13 +3,9 @@
 image:
   rgb565:
     alpha_channel:
-      - file: https://esphome.io/_static/logo-text-on-light.svg
+      - file: https://media.esphome.io/logo/logo.svg
         id: boot_logo_90px
-        resize: 450x90 # aspect ratio 5
-        
-      - file: https://esphome.io/_static/logo-text-on-light.svg
-        id: boot_logo_20px
-        resize: 100x20  # aspect ratio 5
+        resize: 90x90 # aspect ratio 5
         
       - file: assets/produced_icon.svg
         id: produced_icon_80px
@@ -24,12 +20,6 @@ image:
       - file: assets/rangehood.svg
         id: rangehood_30px
         resize: 30x30
-      - file: mdi:tree-outline
-        id: tree_outline_50px
-        resize: 50x50
-      - file: mdi:water-percent
-        id: humidity_50px
-        resize: 50x50
 
   binary:
     - file: assets/1x1.png

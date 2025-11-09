@@ -7,7 +7,7 @@
             id: lv_button_${id}
             widgets:
               - label:
-                  hidden: ${ icon is not defined }
+                  hidden: ${ "false" if icon is defined else "true" }
                   text: ${ icon | d("") }
                   image_recolor: $icon_on_color
                   text_font: $icon_font
@@ -17,13 +17,14 @@
                   text_color: $icon_off_color
                   checked:
                     text_color: $icon_on_color
+                    image_recolor_opa: cover
               - image:
-                  hidden: ${ image is not defined }
                   src: ${ image | d("empty_image") }
                   image_recolor: $icon_off_color
                   image_recolor_opa: cover
                   align: top_left
                   id: lv_button_${id}_image
+                  hidden: ${ "false" if image is defined else "true" }
                   checked:
                     image_recolor: $icon_on_color
               - label:

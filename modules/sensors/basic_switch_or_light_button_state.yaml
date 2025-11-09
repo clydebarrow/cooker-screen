@@ -14,7 +14,6 @@ text_sensor:
               - lv_button_${id}
               - lv_button_${id}_label
               - lv_button_${id}_icon
-              - lv_button_${id}_image
             state:
               checked: !lambda return x == "on";
               disabled: !lambda return x == "unknown" || x == "unavailable";
