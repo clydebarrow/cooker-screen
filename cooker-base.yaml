@@ -78,11 +78,7 @@ packages:
 .hc: &hcontainer
   styles: container
   pad_all: 5px
-  layout:
-    type: flex
-    flex_flow: row
-    flex_align_main: space_between
-    flex_align_cross: center
+  layout: horizontal
   width: 100%
   
 # -------------------------------------------------------------------------
@@ -109,7 +105,7 @@ lvgl:
     bg_opa: cover
     pad_all: 0
     widgets:
-    - obj:
+    - container:
         <<: *hcontainer
         height: 50%
         align: top_mid

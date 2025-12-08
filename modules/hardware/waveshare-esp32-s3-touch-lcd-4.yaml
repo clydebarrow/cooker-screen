@@ -71,9 +71,11 @@ binary_sensor:
     name: High Humidity
     threshold:
       upper: !lambda |-
-        return id(average_humidity).state + 10.0;
+        return id(average_humidity).state + 8.0;
       lower: !lambda |-
-        return id(average_humidity).state + 7.0;
+        return id(average_humidity).state + 4.0;
+    filters:
+      - delayed_off: 1min
     
 
 pca9554:
@@ -123,12 +125,8 @@ spi:
     clk_pin: GPIO2
     mosi_pin: GPIO1
     
-external_components:
-  - source: github://pr#9892
-    components: [mipi, mipi_rgb]
-    refresh: 1h
-
 display:
   platform: mipi_rgb
   model: "WAVESHARE-4-480x480"
   rotation: 270
+  show_test_card: true
