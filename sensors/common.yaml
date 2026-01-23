@@ -24,32 +24,24 @@ sensor:
             text:
               format: "%.1f"
               args: [x]
+              if_nan: "--"
   - platform: homeassistant
     entity_id: sensor.cooker_current
     id: cooker_current
     on_value:
-      if:
-        condition:
-          lambda: "return isnan(x);"
-        then:
-          lvgl.label.update:
-            id: current_1_value
-            state:
-              checked: false
-            text: "--"
-        else:
-          - lvgl.label.update:
-              id: current_1_value
-              state:
-                checked: !lambda return x > 30;
-              text:
-                format: "%.0f"
-                args: [x]
-          - if:
-              condition:
-                lambda: return x > 2;
-              then:
-                script.execute: light_on
+      - lvgl.label.update:
+          id: current_1_value
+          state:
+            checked: !lambda return x > 30;
+          text:
+            format: "%.0f"
+            args: [x]
+            if_nan: "--"
+      - if:
+          condition:
+            lambda: return x > 2;
+          then:
+            script.execute: light_on
 
 
   - platform: homeassistant

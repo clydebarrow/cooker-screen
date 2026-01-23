@@ -129,4 +129,3 @@ display:
   platform: mipi_rgb
   model: "WAVESHARE-4-480x480"
   rotation: 270
-  show_test_card: true

@@ -15,3 +15,7 @@ esphome:
   
 # Application config
 <<: !include cooker-base.yaml
+
+button:
+  - platform: restart
+    name: "Restart"
