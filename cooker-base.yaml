@@ -85,6 +85,7 @@ packages:
 # LVGL pages and buttons
 # -------------------------------------------------------------------------
 lvgl:
+  rotation: 270
   theme: !include { file: modules/lvgl/base/lvgl_theme.yaml }
   page_wrap: true
   style_definitions:
