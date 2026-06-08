@@ -44,11 +44,8 @@ script:
     mode: restart
     then:
       - lambda: "id(timer_running) = true;"
-      - lvgl.label.update:
-          id: lv_time_hours
-          text_color: $button_on_color
-      - lvgl.label.update:
-          id: lv_time_minutes
+      - lvgl.widget.update:
+          id: lv_time_1
           text_color: $button_on_color
       - while:
           condition:
@@ -58,6 +55,7 @@ script:
             - delay: 1s
             - lambda: "id(timer_remaining) -= 1;"
       - script.execute: timer_show
+      - script.execute: timer_flash
       - script.execute: timer_alarm
 
   # A short triple beep: bip-bip-bip (distinct from other alarm cadences).
@@ -75,7 +73,8 @@ script:
       - delay: 120ms
       - switch.turn_off: buzzer
 
-  # Repeat the triple beep once a second for up to 30s, then stop.
+  # Repeat the triple beep once a second for up to 30s, then stop beeping.
+  # The flashing (timer_flash) keeps going until dismissed by a touch.
   - id: timer_alarm
     mode: restart
     then:
@@ -85,7 +84,27 @@ script:
             - script.execute: timer_bips
             - script.wait: timer_bips
             - delay: 1s
-      - script.execute: timer_stop
+      - switch.turn_off: buzzer
+
+  # Flash the timer background; runs until timer_stop is called by a touch.
+  - id: timer_flash
+    mode: restart
+    then:
+      - while:
+          condition:
+            lambda: "return true;"
+          then:
+            - lvgl.widget.update:
+                id: lv_time_1
+                bg_color: $button_on_color
+                bg_opa: COVER
+                text_color: black
+            - delay: 500ms
+            - lvgl.widget.update:
+                id: lv_time_1
+                bg_opa: TRANSP
+                text_color: $time_color
+            - delay: 500ms
 
   # Stop everything and restore the normal clock display.
   - id: timer_stop
@@ -93,15 +112,14 @@ script:
       - script.stop: timer_run
       - script.stop: timer_alarm
       - script.stop: timer_bips
+      - script.stop: timer_flash
       - switch.turn_off: buzzer
       - lambda: |-
           id(timer_running) = false;
           id(timer_remaining) = 0;
-      - lvgl.label.update:
-          id: lv_time_hours
-          text_color: $time_color
-      - lvgl.label.update:
-          id: lv_time_minutes
+      - lvgl.widget.update:
+          id: lv_time_1
+          bg_opa: TRANSP
           text_color: $time_color
       - script.execute: time_update
 
