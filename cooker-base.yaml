@@ -62,6 +62,7 @@ packages:
   - !include modules/common/globals.yaml
   - !include modules/lvgl/base/lvgl_time2_update.yaml
   - !include modules/lvgl/base/lvgl_time_homeassistant.yaml
+  - !include modules/lvgl/timer/countdown.yaml
   - !include scripts/common.yaml
   - !include sensors/common.yaml
 

@@ -1,0 +1,358 @@
+---
+# Countdown timer: popup over the bottom half to set minutes/seconds,
+# a countdown that replaces the clock, and a distinct bip-bip-bip alarm.
+# Implemented with inbuilt ESPHome/LVGL features in preference to lambdas.
+
+globals:
+  - id: timer_running
+    type: bool
+    restore_value: false
+    initial_value: "false"
+  - id: timer_remaining
+    type: int
+    restore_value: false
+    initial_value: "0"
+
+script:
+  # Tapping the clock: while a timer runs, a tap stops it; otherwise open the popup.
+  - id: timer_tap
+    then:
+      - if:
+          condition:
+            lambda: "return id(timer_running);"
+          then:
+            - script.execute: timer_stop
+          else:
+            - lvgl.widget.show: timer_popup
+
+  # Paint the remaining time into the clock labels (mm over ss).
+  - id: timer_show
+    then:
+      - lvgl.label.update:
+          id: lv_time_hours
+          text:
+            format: "%02d"
+            args: ["id(timer_remaining) / 60"]
+      - lvgl.label.update:
+          id: lv_time_minutes
+          text:
+            format: "%02d"
+            args: ["id(timer_remaining) % 60"]
+
+  # Count down once per second, then raise the alarm.
+  - id: timer_run
+    mode: restart
+    then:
+      - lambda: "id(timer_running) = true;"
+      - lvgl.label.update:
+          id: lv_time_hours
+          text_color: $button_on_color
+      - lvgl.label.update:
+          id: lv_time_minutes
+          text_color: $button_on_color
+      - while:
+          condition:
+            lambda: "return id(timer_remaining) > 0;"
+          then:
+            - script.execute: timer_show
+            - delay: 1s
+            - lambda: "id(timer_remaining) -= 1;"
+      - script.execute: timer_show
+      - script.execute: timer_alarm
+
+  # A short triple beep: bip-bip-bip (distinct from other alarm cadences).
+  - id: timer_bips
+    then:
+      - switch.turn_on: buzzer
+      - delay: 120ms
+      - switch.turn_off: buzzer
+      - delay: 120ms
+      - switch.turn_on: buzzer
+      - delay: 120ms
+      - switch.turn_off: buzzer
+      - delay: 120ms
+      - switch.turn_on: buzzer
+      - delay: 120ms
+      - switch.turn_off: buzzer
+
+  # Repeat the triple beep once a second for up to 30s, then stop.
+  - id: timer_alarm
+    mode: restart
+    then:
+      - repeat:
+          count: 30
+          then:
+            - script.execute: timer_bips
+            - script.wait: timer_bips
+            - delay: 1s
+      - script.execute: timer_stop
+
+  # Stop everything and restore the normal clock display.
+  - id: timer_stop
+    then:
+      - script.stop: timer_run
+      - script.stop: timer_alarm
+      - script.stop: timer_bips
+      - switch.turn_off: buzzer
+      - lambda: |-
+          id(timer_running) = false;
+          id(timer_remaining) = 0;
+      - lvgl.label.update:
+          id: lv_time_hours
+          text_color: $time_color
+      - lvgl.label.update:
+          id: lv_time_minutes
+          text_color: $time_color
+      - script.execute: time_update
+
+# Popup placed on the top layer so it floats over the bottom half of the page.
+lvgl:
+  top_layer:
+    widgets:
+      - obj:
+          id: timer_popup
+          hidden: true
+          align: bottom_mid
+          width: 100%
+          height: 50%
+          bg_color: black
+          bg_opa: cover
+          pad_all: 4px
+          layout:
+            type: flex
+            flex_flow: column
+            flex_align_main: space_between
+            flex_align_cross: center
+            pad_row: 4px
+          widgets:
+            - label:
+                text: "Set Timer"
+                text_font: roboto22
+                text_color: white
+            - obj:
+                styles: container
+                flex_grow: 1
+                width: 100%
+                layout:
+                  type: flex
+                  flex_flow: row
+                  flex_align_main: center
+                  flex_align_cross: center
+                  pad_column: 8px
+                widgets:
+                  - roller:
+                      id: roller_minutes
+                      text_font: $text_font
+                      visible_row_count: 3
+                      mode: infinite
+                      options:
+                        - "00"
+                        - "01"
+                        - "02"
+                        - "03"
+                        - "04"
+                        - "05"
+                        - "06"
+                        - "07"
+                        - "08"
+                        - "09"
+                        - "10"
+                        - "11"
+                        - "12"
+                        - "13"
+                        - "14"
+                        - "15"
+                        - "16"
+                        - "17"
+                        - "18"
+                        - "19"
+                        - "20"
+                        - "21"
+                        - "22"
+                        - "23"
+                        - "24"
+                        - "25"
+                        - "26"
+                        - "27"
+                        - "28"
+                        - "29"
+                        - "30"
+                        - "31"
+                        - "32"
+                        - "33"
+                        - "34"
+                        - "35"
+                        - "36"
+                        - "37"
+                        - "38"
+                        - "39"
+                        - "40"
+                        - "41"
+                        - "42"
+                        - "43"
+                        - "44"
+                        - "45"
+                        - "46"
+                        - "47"
+                        - "48"
+                        - "49"
+                        - "50"
+                        - "51"
+                        - "52"
+                        - "53"
+                        - "54"
+                        - "55"
+                        - "56"
+                        - "57"
+                        - "58"
+                        - "59"
+                        - "60"
+                        - "61"
+                        - "62"
+                        - "63"
+                        - "64"
+                        - "65"
+                        - "66"
+                        - "67"
+                        - "68"
+                        - "69"
+                        - "70"
+                        - "71"
+                        - "72"
+                        - "73"
+                        - "74"
+                        - "75"
+                        - "76"
+                        - "77"
+                        - "78"
+                        - "79"
+                        - "80"
+                        - "81"
+                        - "82"
+                        - "83"
+                        - "84"
+                        - "85"
+                        - "86"
+                        - "87"
+                        - "88"
+                        - "89"
+                        - "90"
+                        - "91"
+                        - "92"
+                        - "93"
+                        - "94"
+                        - "95"
+                        - "96"
+                        - "97"
+                        - "98"
+                        - "99"
+                  - label:
+                      text: "min"
+                      text_font: roboto22
+                      text_color: white
+                  - roller:
+                      id: roller_seconds
+                      text_font: $text_font
+                      visible_row_count: 3
+                      mode: infinite
+                      options:
+                        - "00"
+                        - "01"
+                        - "02"
+                        - "03"
+                        - "04"
+                        - "05"
+                        - "06"
+                        - "07"
+                        - "08"
+                        - "09"
+                        - "10"
+                        - "11"
+                        - "12"
+                        - "13"
+                        - "14"
+                        - "15"
+                        - "16"
+                        - "17"
+                        - "18"
+                        - "19"
+                        - "20"
+                        - "21"
+                        - "22"
+                        - "23"
+                        - "24"
+                        - "25"
+                        - "26"
+                        - "27"
+                        - "28"
+                        - "29"
+                        - "30"
+                        - "31"
+                        - "32"
+                        - "33"
+                        - "34"
+                        - "35"
+                        - "36"
+                        - "37"
+                        - "38"
+                        - "39"
+                        - "40"
+                        - "41"
+                        - "42"
+                        - "43"
+                        - "44"
+                        - "45"
+                        - "46"
+                        - "47"
+                        - "48"
+                        - "49"
+                        - "50"
+                        - "51"
+                        - "52"
+                        - "53"
+                        - "54"
+                        - "55"
+                        - "56"
+                        - "57"
+                        - "58"
+                        - "59"
+                  - label:
+                      text: "sec"
+                      text_font: roboto22
+                      text_color: white
+            - obj:
+                styles: container
+                width: 100%
+                height: 54px
+                layout:
+                  type: flex
+                  flex_flow: row
+                  flex_align_main: space_evenly
+                  flex_align_cross: center
+                widgets:
+                  - button:
+                      width: 130px
+                      height: 50px
+                      widgets:
+                        - label:
+                            align: center
+                            text_color: $button_text_color
+                            text: "Cancel"
+                      on_click:
+                        - lvgl.widget.hide: timer_popup
+                  - button:
+                      width: 130px
+                      height: 50px
+                      bg_color: $button_on_color
+                      widgets:
+                        - label:
+                            align: center
+                            text_color: $button_text_color
+                            text: "Start"
+                      on_click:
+                        - lambda: |-
+                            id(timer_remaining) =
+                                id(roller_minutes)->get_selected_index() * 60 +
+                                id(roller_seconds)->get_selected_index();
+                        - lvgl.widget.hide: timer_popup
+                        - script.execute: timer_run

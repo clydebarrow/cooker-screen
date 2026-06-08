@@ -89,10 +89,6 @@ touchscreen:
     pca9554: expander
     number: 0
   interrupt_pin: 16
-  transform:
-    swap_xy: true
-    mirror_y: false
-    mirror_x: true
 
 
 light:

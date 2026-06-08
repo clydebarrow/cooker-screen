@@ -2,6 +2,9 @@
             height: ${ height | d("size_content") }
             width: ${ width | d("size_content") }
             id: lv_time_${id}
+            clickable: true
+            on_click:
+              - script.execute: timer_tap
             bg_opa: TRANSP
             text_font: $time_font
             text_color: $time_color
