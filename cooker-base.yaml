@@ -14,7 +14,7 @@ substitutions:
   light_recessed:    "\U000F179B"
 
   icon_font: light40
-  time_font: dseg_60
+  time_font: time_font60
   date_font: roboto48
   text_font: roboto24
   number_font: numbers64

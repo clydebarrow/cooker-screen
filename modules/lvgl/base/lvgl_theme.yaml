@@ -28,3 +28,5 @@
       checked:
         bg_color: $button_on_color
         text_color: gray
+    roller:
+      text_font: roboto32

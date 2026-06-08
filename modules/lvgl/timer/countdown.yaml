@@ -4,10 +4,6 @@
 # Implemented with inbuilt ESPHome/LVGL features in preference to lambdas.
 
 globals:
-  - id: timer_running
-    type: bool
-    restore_value: false
-    initial_value: "false"
   - id: timer_remaining
     type: int
     restore_value: false
@@ -18,8 +14,9 @@ script:
   - id: timer_tap
     then:
       - if:
-          condition:
-            lambda: "return id(timer_running);"
+          any:
+            - script.is_running: timer_run
+            - script.is_running: timer_flash
           then:
             - script.execute: timer_stop
           else:
@@ -43,7 +40,6 @@ script:
   - id: timer_run
     mode: restart
     then:
-      - lambda: "id(timer_running) = true;"
       - lvgl.widget.update:
           id: lv_time_1
           text_color: $button_on_color
@@ -115,7 +111,6 @@ script:
       - script.stop: timer_flash
       - switch.turn_off: buzzer
       - lambda: |-
-          id(timer_running) = false;
           id(timer_remaining) = 0;
       - lvgl.widget.update:
           id: lv_time_1
@@ -127,230 +122,195 @@ script:
 lvgl:
   top_layer:
     widgets:
-      - obj:
+      - container:
           id: timer_popup
           hidden: true
-          align: bottom_mid
+          align: bottom_right
           width: 100%
           height: 50%
           bg_color: black
           bg_opa: cover
-          pad_all: 4px
-          layout:
-            type: flex
-            flex_flow: column
-            flex_align_main: space_between
-            flex_align_cross: center
-            pad_row: 4px
+          pad_all: 8px
+          layout: horizontal
           widgets:
-            - label:
-                text: "Set Timer"
-                text_font: roboto22
-                text_color: white
-            - obj:
-                styles: container
-                flex_grow: 1
-                width: 100%
+            - roller:
+                id: roller_minutes
+                visible_row_count: 3
+                mode: infinite
+                options:
+                  - "00"
+                  - "01"
+                  - "02"
+                  - "03"
+                  - "04"
+                  - "05"
+                  - "06"
+                  - "07"
+                  - "08"
+                  - "09"
+                  - "10"
+                  - "11"
+                  - "12"
+                  - "13"
+                  - "14"
+                  - "15"
+                  - "16"
+                  - "17"
+                  - "18"
+                  - "19"
+                  - "20"
+                  - "21"
+                  - "22"
+                  - "23"
+                  - "24"
+                  - "25"
+                  - "26"
+                  - "27"
+                  - "28"
+                  - "29"
+                  - "30"
+                  - "31"
+                  - "32"
+                  - "33"
+                  - "34"
+                  - "35"
+                  - "36"
+                  - "37"
+                  - "38"
+                  - "39"
+                  - "40"
+                  - "41"
+                  - "42"
+                  - "43"
+                  - "44"
+                  - "45"
+                  - "46"
+                  - "47"
+                  - "48"
+                  - "49"
+                  - "50"
+                  - "51"
+                  - "52"
+                  - "53"
+                  - "54"
+                  - "55"
+                  - "56"
+                  - "57"
+                  - "58"
+                  - "59"
+                  - "60"
+                  - "61"
+                  - "62"
+                  - "63"
+                  - "64"
+                  - "65"
+                  - "66"
+                  - "67"
+                  - "68"
+                  - "69"
+                  - "70"
+                  - "71"
+                  - "72"
+                  - "73"
+                  - "74"
+                  - "75"
+                  - "76"
+                  - "77"
+                  - "78"
+                  - "79"
+                  - "80"
+                  - "81"
+                  - "82"
+                  - "83"
+                  - "84"
+                  - "85"
+                  - "86"
+                  - "87"
+                  - "88"
+                  - "89"
+                  - "90"
+                  - "91"
+                  - "92"
+                  - "93"
+                  - "94"
+                  - "95"
+                  - "96"
+                  - "97"
+                  - "98"
+                  - "99"
+            - roller:
+                id: roller_seconds
+                visible_row_count: 3
+                mode: infinite
+                options:
+                  - "00"
+                  - "01"
+                  - "02"
+                  - "03"
+                  - "04"
+                  - "05"
+                  - "06"
+                  - "07"
+                  - "08"
+                  - "09"
+                  - "10"
+                  - "11"
+                  - "12"
+                  - "13"
+                  - "14"
+                  - "15"
+                  - "16"
+                  - "17"
+                  - "18"
+                  - "19"
+                  - "20"
+                  - "21"
+                  - "22"
+                  - "23"
+                  - "24"
+                  - "25"
+                  - "26"
+                  - "27"
+                  - "28"
+                  - "29"
+                  - "30"
+                  - "31"
+                  - "32"
+                  - "33"
+                  - "34"
+                  - "35"
+                  - "36"
+                  - "37"
+                  - "38"
+                  - "39"
+                  - "40"
+                  - "41"
+                  - "42"
+                  - "43"
+                  - "44"
+                  - "45"
+                  - "46"
+                  - "47"
+                  - "48"
+                  - "49"
+                  - "50"
+                  - "51"
+                  - "52"
+                  - "53"
+                  - "54"
+                  - "55"
+                  - "56"
+                  - "57"
+                  - "58"
+                  - "59"
+            - container:
                 layout:
                   type: flex
-                  flex_flow: row
-                  flex_align_main: center
-                  flex_align_cross: center
-                  pad_column: 8px
-                widgets:
-                  - roller:
-                      id: roller_minutes
-                      text_font: $text_font
-                      visible_row_count: 3
-                      mode: infinite
-                      options:
-                        - "00"
-                        - "01"
-                        - "02"
-                        - "03"
-                        - "04"
-                        - "05"
-                        - "06"
-                        - "07"
-                        - "08"
-                        - "09"
-                        - "10"
-                        - "11"
-                        - "12"
-                        - "13"
-                        - "14"
-                        - "15"
-                        - "16"
-                        - "17"
-                        - "18"
-                        - "19"
-                        - "20"
-                        - "21"
-                        - "22"
-                        - "23"
-                        - "24"
-                        - "25"
-                        - "26"
-                        - "27"
-                        - "28"
-                        - "29"
-                        - "30"
-                        - "31"
-                        - "32"
-                        - "33"
-                        - "34"
-                        - "35"
-                        - "36"
-                        - "37"
-                        - "38"
-                        - "39"
-                        - "40"
-                        - "41"
-                        - "42"
-                        - "43"
-                        - "44"
-                        - "45"
-                        - "46"
-                        - "47"
-                        - "48"
-                        - "49"
-                        - "50"
-                        - "51"
-                        - "52"
-                        - "53"
-                        - "54"
-                        - "55"
-                        - "56"
-                        - "57"
-                        - "58"
-                        - "59"
-                        - "60"
-                        - "61"
-                        - "62"
-                        - "63"
-                        - "64"
-                        - "65"
-                        - "66"
-                        - "67"
-                        - "68"
-                        - "69"
-                        - "70"
-                        - "71"
-                        - "72"
-                        - "73"
-                        - "74"
-                        - "75"
-                        - "76"
-                        - "77"
-                        - "78"
-                        - "79"
-                        - "80"
-                        - "81"
-                        - "82"
-                        - "83"
-                        - "84"
-                        - "85"
-                        - "86"
-                        - "87"
-                        - "88"
-                        - "89"
-                        - "90"
-                        - "91"
-                        - "92"
-                        - "93"
-                        - "94"
-                        - "95"
-                        - "96"
-                        - "97"
-                        - "98"
-                        - "99"
-                  - label:
-                      text: "min"
-                      text_font: roboto22
-                      text_color: white
-                  - roller:
-                      id: roller_seconds
-                      text_font: $text_font
-                      visible_row_count: 3
-                      mode: infinite
-                      options:
-                        - "00"
-                        - "01"
-                        - "02"
-                        - "03"
-                        - "04"
-                        - "05"
-                        - "06"
-                        - "07"
-                        - "08"
-                        - "09"
-                        - "10"
-                        - "11"
-                        - "12"
-                        - "13"
-                        - "14"
-                        - "15"
-                        - "16"
-                        - "17"
-                        - "18"
-                        - "19"
-                        - "20"
-                        - "21"
-                        - "22"
-                        - "23"
-                        - "24"
-                        - "25"
-                        - "26"
-                        - "27"
-                        - "28"
-                        - "29"
-                        - "30"
-                        - "31"
-                        - "32"
-                        - "33"
-                        - "34"
-                        - "35"
-                        - "36"
-                        - "37"
-                        - "38"
-                        - "39"
-                        - "40"
-                        - "41"
-                        - "42"
-                        - "43"
-                        - "44"
-                        - "45"
-                        - "46"
-                        - "47"
-                        - "48"
-                        - "49"
-                        - "50"
-                        - "51"
-                        - "52"
-                        - "53"
-                        - "54"
-                        - "55"
-                        - "56"
-                        - "57"
-                        - "58"
-                        - "59"
-                  - label:
-                      text: "sec"
-                      text_font: roboto22
-                      text_color: white
-            - obj:
-                styles: container
-                width: 100%
-                height: 54px
-                layout:
-                  type: flex
-                  flex_flow: row
+                  flex_flow: column
                   flex_align_main: space_evenly
-                  flex_align_cross: center
+                  flex_align_cross: stretch
                 widgets:
                   - button:
-                      width: 130px
-                      height: 50px
                       widgets:
                         - label:
                             align: center
@@ -359,8 +319,6 @@ lvgl:
                       on_click:
                         - lvgl.widget.hide: timer_popup
                   - button:
-                      width: 130px
-                      height: 50px
                       bg_color: $button_on_color
                       widgets:
                         - label:

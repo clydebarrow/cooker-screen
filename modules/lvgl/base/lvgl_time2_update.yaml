@@ -3,9 +3,10 @@ script:
   - id: time_update
     then:
       - if:
-          condition:
-            lambda: "return !id(timer_running);"
-          then:
+          any:
+            - script.is_running: timer_run
+            - script.is_running: timer_flash
+          else:
             - lvgl.label.update:
                 id: lv_time_minutes
                 text:

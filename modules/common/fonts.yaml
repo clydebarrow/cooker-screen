@@ -87,3 +87,10 @@ font:
     size: 60
     bpp: 4
     glyphs: "0123456789!:."
+
+  - file: "gfonts://Chivo Mono"
+    id: time_font60
+    size: 90
+    bpp: 4
+    glyphs: "0123456789!:."
+    
