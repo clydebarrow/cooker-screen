@@ -20,14 +20,13 @@ script:
       - switch.turn_off: buzzer
       - if:
           condition:
-            lambda: return id(cooker_current).state > 35;
+            lambda: return id(cooker_current).state > 40;
           then:
             delay: 0.5s
           else:
             delay: 15s
       - if:
           condition:
-            lambda: return id(cooker_current).state > 30;
+            lambda: return id(cooker_current).state > 35;
           then:
             script.execute: beep
-

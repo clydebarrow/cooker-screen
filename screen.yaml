@@ -1,20 +1,22 @@
-esphome:
+substitutions:
   name: cooker-screen
   friendly_name: Cooker Screen
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
   comment: "Waveshare ESP-Touch-LCD-4"
   on_boot:
     - light.turn_on:
         id: display_backlight
         brightness: 100%
-    
-# Hardware description file
-<<: !include modules/hardware/waveshare-esp32-s3-touch-lcd-4.yaml
 
-# Generic configuration for ESP32 screens
-<<: !include modules/common/wifi.yaml
-  
+
+packages:
+  - !include modules/common/wifi.yaml
+  - !include modules/hardware/waveshare-esp32-s3-touch-lcd-4.yaml
 # Application config
-<<: !include cooker-base.yaml
+  - !include cooker-base.yaml
 
 button:
   - platform: restart
